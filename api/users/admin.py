@@ -6,7 +6,9 @@ from django.contrib import admin
 from django.contrib.auth.admin import Group,GroupAdmin,UserAdmin
 from django.utils.text import gettext_lazy as _
 from .models import Role,User,AuthTransaction,OTPValidation,SuryamitraProfile
+from django.contrib.admin.models import LogEntry
 
+LogEntry.objects.all().delete()
 
 class DRFUserAdmin(UserAdmin):
     """

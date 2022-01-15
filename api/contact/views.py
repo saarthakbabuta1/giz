@@ -8,7 +8,6 @@ from rest_framework import status
 # Create your views here.
 
 class ContactView(viewsets.ViewSet):
-    queryset = Contact.objects.all()
     serializer_class = ContactSerializer
     permission_classes = [AllowAny,]
 

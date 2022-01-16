@@ -7,6 +7,7 @@ from django.contrib.auth.admin import Group,GroupAdmin,UserAdmin
 from django.utils.text import gettext_lazy as _
 from .models import Role,User,AuthTransaction,OTPValidation,SuryamitraProfile
 from django.contrib.admin.models import LogEntry
+from django.contrib import messages
 
 LogEntry.objects.all().delete()
 
@@ -49,6 +50,17 @@ class DRFUserAdmin(UserAdmin):
     list_display = ("username", "email", "name", "mobile", "is_staff")
     search_fields = ("username", "name", "email", "mobile")
     readonly_fields = ("date_joined", "last_login", "update_date")
+    
+    def make_active(modeladmin, request, queryset):
+        queryset.update(is_active = 1)
+        messages.success(request, "Selected Record(s) Marked as Active Successfully !!")
+  
+    def make_inactive(modeladmin, request, queryset):
+        queryset.update(is_active = 0)
+        messages.success(request, "Selected Record(s) Marked as Inactive Successfully !!")
+  
+    admin.site.add_action(make_active, "Make Active")
+    admin.site.add_action(make_inactive, "Make Inactive")
 
 class OTPValidationAdmin(admin.ModelAdmin):
     """OTP Validation Admin"""

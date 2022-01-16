@@ -2,6 +2,10 @@ from django.contrib import admin
 from .models import Models,Products
 # Register your models here.
 
+from django.contrib.admin.models import LogEntry
+
+LogEntry.objects.all().delete()
+
 class ProductsAdmin(admin.ModelAdmin):
 
 

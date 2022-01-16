@@ -44,8 +44,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     name = models.CharField(verbose_name=_("Full Name"), max_length=500, blank=False)
     profile_image = models.ImageField(
-        verbose_name=_("Profile Photo"), upload_to="user_images", null=True, blank=True
-    )
+        verbose_name=_("Profile Photo"), upload_to="user_images", null=True, blank=True)
     date_joined = models.DateTimeField(verbose_name=_("Date Joined"), auto_now_add=True)
     update_date = models.DateTimeField(verbose_name=_("Date Modified"), auto_now=True)
     is_active = models.BooleanField(verbose_name=_("Activated"), default=False)
@@ -179,7 +178,8 @@ class SuryamitraProfile(models.Model):
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-        print("Instance",instance)
+        print("Instance: ",instance)
+        print(sender.objects.filter(username = instance).values('groups')[0])
         group = sender.objects.filter(username = instance).values('groups')[0]['groups']
         print(group)
         if group == "1":

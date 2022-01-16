@@ -9,7 +9,6 @@ from users import user_settings
 from users.models import User
 from users.utils import check_validation
 from users.variables import MOBILE,EMAIL
-from .models import SuryamitraProfile
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 class UserSerializer(serializers.ModelSerializer):

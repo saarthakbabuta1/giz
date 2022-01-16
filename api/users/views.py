@@ -12,8 +12,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.utils.text import gettext_lazy as _
 
-
-
 from .serializers import UserSerializer,CustomTokenObtainPairSerializer
 from .serializers import CheckUniqueSerializer,OTPSerializer
 from .serializers import OTPLoginRegisterSerializer,PasswordResetSerializer
@@ -76,12 +74,10 @@ class LoginView(APIView):
         Process a login request via username/password.
         """
         serializer = self.serializer_class(data=request.data)
-
         serializer.is_valid(raise_exception=True)
-
         # if data is valid then create a record in auth transaction model
         user = serializer.user
-        print(user)
+        
         token = serializer.validated_data.get("access")
         refresh_token = serializer.validated_data.get("refresh")
 

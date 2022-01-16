@@ -1,5 +1,3 @@
-from ensurepip import bootstrap
-import imp
 import boto3
 from users.keys import *
 

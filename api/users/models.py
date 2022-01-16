@@ -8,8 +8,6 @@ from django.dispatch import receiver
 from users.managers import UserManager
 from users.variables import DESTINATION_CHOICES,EMAIL
 
-
-
 class Role(Group):
     """
     A proxy model for Group for renaming Group to Role.
@@ -21,8 +19,6 @@ class Role(Group):
         proxy = True
         verbose_name = _("Role")
         verbose_name_plural = _("Roles")
-
-
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -87,7 +83,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         """String representation of model"""
 
-        return str(self.name) + " | " + str(self.username)
+        return str(self.username)
 
 
 class AuthTransaction(models.Model):
@@ -168,7 +164,7 @@ class OTPValidation(models.Model):
         verbose_name_plural = _("OTP Validations")
 
 class SuryamitraProfile(models.Model):
-    user = models.ForeignKey(User,on_delete=models.CASCADE,blank=True,null=True)
+    user = models.ForeignKey(User,on_delete=models.CASCADE,blank=True,null=True,editable=False)
     registeration_id = models.CharField(max_length=150,unique=True)
     certificate_copy = models.ImageField()
 
@@ -178,10 +174,17 @@ class SuryamitraProfile(models.Model):
         verbose_name_plural = _("Suryamitra")
 
     def __str__(self):
-        return self.user
+        return str(self.user)
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-        print(instance)
-        SuryamitraProfile.objects.create(user=instance,registeration_id="123456789")
+        print("Instance",instance)
+        group = sender.objects.filter(username = instance).values('groups')[0]['groups']
+        print(group)
+        if group == "1":
+            SuryamitraProfile.objects.create(user=instance,registeration_id="123456")
+        elif group == "2":
+            print("vendor")
+        elif group == None:
+            print("No group")

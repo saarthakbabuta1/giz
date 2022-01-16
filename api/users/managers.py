@@ -16,8 +16,7 @@ class UserManager(BaseUserManager):
         email: str,
         password: str,
         fullname: str,
-        groups: str,
-        registeration_id: Optional[str],
+        groups: Optional[str],
         mobile: Optional[str] = None,
         **kwargs
     ):
@@ -40,6 +39,7 @@ class UserManager(BaseUserManager):
         email: str,
         password: str,
         name: str,
+        groups: Optional[str],
         mobile: Optional[str] = None,
         **kwargs
     ):
@@ -67,7 +67,7 @@ class UserManager(BaseUserManager):
         kwargs.setdefault("is_active", True)
         #kwargs.setdefault("is_active", vals.get("DEFAULT_ACTIVE_STATE", False))
 
-        return self._create_user(username, email, password, name, mobile, **kwargs)
+        return self._create_user(username, email, password, name,groups, mobile, **kwargs)
 
     def create_superuser(
         self,
@@ -75,6 +75,7 @@ class UserManager(BaseUserManager):
         email: str,
         password: str,
         name: str,
+        groups: Optional[str],
         mobile: Optional[str] = None,
         **kwargs
     ):
@@ -107,4 +108,4 @@ class UserManager(BaseUserManager):
         if kwargs.get("is_staff") is not True:
             raise ValueError("Superuser must have is_staff=True.")
 
-        return self._create_user(username, email, password, name, mobile, **kwargs)
+        return self._create_user(username, email, password, name,groups, mobile, **kwargs)

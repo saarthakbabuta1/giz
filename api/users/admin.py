@@ -10,8 +10,6 @@ from django.contrib.admin.models import LogEntry
 
 LogEntry.objects.all().delete()
 
-
-
 class DRFUserAdmin(UserAdmin):
     """
     Overrides UserAdmin to show fields name & mobile and remove fields:
@@ -79,6 +77,8 @@ class AuthTransactionAdmin(admin.ModelAdmin):
         return False
 
 admin.site.site_header = "PVPORT - GIZ"
+admin.site.site_title = "Admin Panel"
+admin.site.index_title = "Admin Panel"
 
 admin.site.unregister(Group)
 

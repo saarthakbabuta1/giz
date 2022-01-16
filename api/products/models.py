@@ -12,6 +12,7 @@ class Models(models.Model):
         db_table = 'pv_models'
         verbose_name = _("Model")
         verbose_name_plural = _("Models")
+        ordering = ['sku']
 
     def __str__(self):
         return self.name
@@ -28,6 +29,7 @@ class Products(models.Model):
         db_table = 'pv_products'
         verbose_name = _("Product")
         verbose_name_plural = _("Products")
+        ordering = ['sku']
 
 
     def __str__(self):

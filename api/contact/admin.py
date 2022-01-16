@@ -5,6 +5,7 @@ from .models import Contact
 # Register your models here.
 
 class ContactAdmin(admin.ModelAdmin):
-    pass
+    list_display = ("name","email","mobile")
+    search_fields = ["name"]
 
 admin.site.register(Contact,ContactAdmin)

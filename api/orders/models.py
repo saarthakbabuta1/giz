@@ -22,7 +22,6 @@ class OrdersModel(models.Model):
     order_confirmation = models.CharField(max_length=255,blank=True,null=True)
     delivery_timeline = models.DateTimeField(blank=True,null=True)
     tech_contact_information = models.CharField(max_length=255,blank=True,null=True)
-    
     suryamitra = models.ForeignKey(to=SuryamitraProfile,on_delete = models.CASCADE,
     blank=True,null=True)
 

@@ -10,6 +10,8 @@ from django.contrib.admin.models import LogEntry
 
 LogEntry.objects.all().delete()
 
+
+
 class DRFUserAdmin(UserAdmin):
     """
     Overrides UserAdmin to show fields name & mobile and remove fields:

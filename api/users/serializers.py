@@ -12,22 +12,10 @@ from users.variables import MOBILE,EMAIL
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 class UserSerializer(serializers.ModelSerializer):
-    """
-    UserRegisterSerializer is a model serializer which includes the
-    attributes that are required for registering a user.
-    """
+
 
     def validate_email(self, value: str) -> str:
-        """
-        If pre-validated email is required, this function checks if
-        the email is pre-validated using OTP.
-        Parameters
-        ----------
-        value: str
-        Returns
-        -------
-        value: str
-        """
+
         if not user_settings["EMAIL_VALIDATION"]:
             return value
 
@@ -54,13 +42,13 @@ class UserSerializer(serializers.ModelSerializer):
         if not user_settings["MOBILE_VALIDATION"]:
             return value
 
-        if check_validation(value=value):
-            return value
-        else:
-            raise serializers.ValidationError(
-                "The mobile must be " "pre-validated via OTP."
-            )
-
+        # if check_validation(value=value):
+        #     return value
+        # else:
+        #     raise serializers.ValidationError(
+        #         "The mobile must be " "pre-validated via OTP."
+        #     )
+        return value
     def validate_password(self, value: str) -> str:
         """Validate whether the password meets all django validator requirements."""
         validate_password(value)
@@ -122,17 +110,6 @@ class CheckUniqueSerializer(serializers.Serializer):
     value = serializers.CharField()
 
 class OTPLoginRegisterSerializer(serializers.Serializer):
-    """
-    Registers a new user with auto generated password or login user if
-    already exists
-
-    This will also set same OTP for mobile & email for easy process.
-    Params
-    name: Name of user
-    email: Email of user
-    mobile: Mobile of user
-    verify_otp: Required in step 2, OTP from user
-    """
 
     name = serializers.CharField(required=True)
     email = serializers.EmailField(required=True)
@@ -179,38 +156,6 @@ class OTPLoginRegisterSerializer(serializers.Serializer):
 
 
 class OTPSerializer(serializers.Serializer):
-    """
-    This Serializer is for sending OTP & verifying destination via otp.
-    is_login: Set is_login true if trying to login via OTP
-    destination: Required. Place where sending OTP
-    email: Fallback in case of destination is a mobile number
-    verify_otp: OTP in the 2nd step of flow
-
-    Examples
-    --------
-    1. Request an OTP for verifying
-    >>> OTPSerializer(data={"destination": "me@himanshus.com"})
-    Or for mobile number as destination
-    >>> OTPSerializer(data={"destination": "88xx6xx5xx",
-    >>>                     "email": "me@himanshus.com"})
-
-    2. Send OTP to verify
-    >>> OTPSerializer(data={"destination": "me@himanshus.com",
-    >>>                     "verify_otp": 2930432})
-    Or for mobile number as destination
-    >>> OTPSerializer(data={"destination": "88xx6xx5xx",
-    >>>                     "email": "me@himanshus.com",
-    >>>                     "verify_otp": 2930433})
-
-    For log in, just add is_login to request
-    >>> OTPSerializer(data={"destination": "me@himanshus.com",
-    >>>                     "is_login": True})
-    >>> OTPSerializer(data={"destination": "88xx6xx5xx",
-    >>>                     "email": "me@himanshus.com",
-    >>>                     "verify_otp": 2930433, "is_login": True})
-
-    Author: Himanshu Shankar (https://himanshus.com)
-    """
 
     email = serializers.EmailField(required=False)
     is_login = serializers.BooleanField(default=False)
@@ -218,20 +163,7 @@ class OTPSerializer(serializers.Serializer):
     destination = serializers.CharField(required=True)
 
     def get_user(self, prop: str, destination: str) -> User:
-        """
-        Provides current user on the basis of property and destination
-        provided.
-        Parameters
-        ----------
-        prop: str
-            Can be M or E
-        destination: str
-            Provides value of property
-        Returns
-        -------
-        user: User
-
-        """
+ 
         if prop == MOBILE:
             try:
                 user = User.objects.get(mobile=destination)
@@ -246,22 +178,6 @@ class OTPSerializer(serializers.Serializer):
         return user
 
     def validate(self, attrs: dict) -> dict:
-        """
-        Performs custom validation to check if any user exists with
-        provided details.
-        Parameters
-        ----------
-        attrs: dict
-
-        Returns
-        -------
-        attrs: dict
-
-        Raises
-        ------
-        NotFound: If user is not found
-        ValidationError: Email field not provided
-        """
         validator = EmailValidator()
         try:
             validator(attrs["destination"])
@@ -289,30 +205,12 @@ class OTPSerializer(serializers.Serializer):
         return attrs
 
 class PasswordResetSerializer(serializers.Serializer):
-    """This serializer is for password reset API.
-
-    Params
-    otp: OTP received on your email/mobile
-    email: Email of the user whose password you're trying to reset
-    password: new password for the user
-    """
 
     otp = serializers.CharField(required=True)
     email = serializers.EmailField(required=True)
     password = serializers.CharField(required=True)
 
     def get_user(self, destination: str) -> User:
-        """Provides current user on the basis of property and destination
-        provided.
-
-        Parameters
-        ----------
-        destination: str
-            Provides value of property
-        Returns
-        -------
-        user: User
-        """
         try:
             user = User.objects.get(email=destination)
         except User.DoesNotExist:

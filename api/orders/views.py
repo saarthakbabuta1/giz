@@ -42,11 +42,11 @@ class OrdersViews(viewsets.ViewSet):
         serializer = OrdersSerializers(model)
         resp = serializer.data
 
-        prod = {}
-        for j in resp['products'].keys():
-            prod[j] =  list(Products.objects.filter(sku=j).values())[0]
-            prod[j]["quantity"] = resp["products"][j]
-        resp['products'] = prod
+        # prod = {}
+        # for j in resp['products'].keys():
+        #     prod[j] =  list(Products.objects.filter(sku=j).values())[0]
+        #     prod[j]["quantity"] = resp["products"][j]
+        # resp['products'] = prod
 
         return Response(resp,status=status.HTTP_200_OK)
 

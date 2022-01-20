@@ -26,14 +26,6 @@ otp_settings: Dict[str, Union[str, int]] = user_settings["OTP"]
 
 
 def get_client_ip(request: HttpRequest) -> Optional[str]:
-    """
-    Parameters
-    ----------
-    request: django.http.HttpRequest
-    Returns
-    -------
-    ip: str or None
-    """
     x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
     if x_forwarded_for:
         return x_forwarded_for.split(",")[0]
@@ -42,17 +34,6 @@ def get_client_ip(request: HttpRequest) -> Optional[str]:
 
 
 def datetime_passed_now(source: datetime.datetime) -> bool:
-    """
-    Compares provided datetime with current time on the basis of Django
-    settings. Checks source is in future or in past. False if it's in future.
-    Parameters
-    ----------
-    source: datetime object than may or may not be naive
-
-    Returns
-    -------
-    bool
-    """
 
     if source.tzinfo is not None and source.tzinfo.utcoffset(source) is not None:
         return source <= datetime.datetime.utcnow().replace(tzinfo=pytz.utc)
@@ -61,61 +42,11 @@ def datetime_passed_now(source: datetime.datetime) -> bool:
 
 
 def check_unique(prop: str, value: str) -> bool:
-    """
-    This function checks if the value provided is present in Database
-    or can be created in DBMS as unique data.
-    Parameters
-    ----------
-    prop: str
-        The model property to check for. Can be::
-            email
-            mobile
-            username
-    value: str
-        The value of the property specified
-
-    Returns
-    -------
-    bool
-        True if the data sent is doesn't exist, False otherwise.
-    Examples
-    --------
-    To check if test@testing.com email address is already present in
-    Database
-    >>> print(check_unique('email', 'test@testing.com'))
-    True
-    """
     user = User.objects.extra(where=[prop + " = '" + value + "'"])
     return user.count() == 0
 
 
 def generate_otp(prop: str, value: str) -> OTPValidation:
-    """
-    This function generates an OTP and saves it into Model. It also
-    sets various counters, such as send_counter,
-    is_validated, validate_attempt.
-    Parameters
-    ----------
-    prop: str
-        This specifies the type for which OTP is being created. Can be::
-            email
-            mobile
-    value: str
-        This specifies the value for which OTP is being created.
-
-    Returns
-    -------
-    otp_object: OTPValidation
-        This is the instance of OTP that is created.
-    Examples
-    --------
-    To create an OTP for an Email test@testing.com
-    >>> print(generate_otp('email', 'test@testing.com'))
-    OTPValidation object
-
-    >>> print(generate_otp('email', 'test@testing.com').otp)
-    5039164
-    """
     # Create a random number
     random_number: str = User.objects.make_random_password(
         length=otp_settings["LENGTH"], allowed_chars=otp_settings["ALLOWED_CHARS"]
@@ -178,7 +109,6 @@ def send_otp(value: str, otpobj: OTPValidation, recip: str) -> Dict:
     elif re.match(r"[^@]+@[^@]+\.[^@]+", value):
 
         # Create an ses client for sending email            
-
         # The character encoding for the email.
         CHARSET = "UTF-8"
 
@@ -227,20 +157,6 @@ def send_otp(value: str, otpobj: OTPValidation, recip: str) -> Dict:
 
 
 def login_user(user: User, request: HttpRequest) -> Dict[str, str]:
-    """
-    This function is used to login a user. It saves the authentication in
-    AuthTransaction model.
-
-    Parameters
-    ----------
-    user: django.contrib.auth.get_user_model
-    request: HttpRequest
-
-    Returns
-    -------
-    dict:
-        Generated JWT tokens for user.
-    """
     token: RefreshToken = RefreshToken.for_user(user)
 
     # Add custom claims
@@ -273,24 +189,6 @@ def login_user(user: User, request: HttpRequest) -> Dict[str, str]:
 
 
 def check_validation(value: str) -> bool:
-    """
-    This functions check if given value is already validated via OTP or not.
-    Parameters
-    ----------
-    value: str
-        This is the value for which OTP validation is to be checked.
-
-    Returns
-    -------
-    bool
-        True if value is validated, False otherwise.
-    Examples
-    --------
-    To check if 'test@testing.com' has been validated!
-    >>> print(check_validation('test@testing.com'))
-    True
-
-    """
     try:
         otp_object: OTPValidation = OTPValidation.objects.get(destination=value)
         return otp_object.is_validated
@@ -299,20 +197,6 @@ def check_validation(value: str) -> bool:
 
 
 def validate_otp(value: str, otp: int) -> bool:
-    """
-    This function is used to validate the OTP for a particular value.
-    It also reduces the attempt count by 1 and resets OTP.
-    Parameters
-    ----------
-    value: str
-        This is the unique entry for which OTP has to be validated.
-    otp: int
-        This is the OTP that will be validated against one in Database.
-
-    Returns
-    -------
-    bool: True, if OTP is validated
-    """
     try:
         # Try to get OTP Object from Model and initialize data dictionary
         otp_object: OTPValidation = OTPValidation.objects.get(

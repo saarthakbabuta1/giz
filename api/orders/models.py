@@ -3,7 +3,6 @@ from operator import imod
 from django.db import models
 import uuid
 from django.utils.translation import gettext_lazy as _
-from users.models import SuryamitraProfile
 from users.models import User
 
 # Create your models here.
@@ -22,8 +21,8 @@ class OrdersModel(models.Model):
     order_confirmation = models.CharField(max_length=255,blank=True,null=True)
     delivery_timeline = models.DateTimeField(blank=True,null=True)
     tech_contact_information = models.CharField(max_length=255,blank=True,null=True)
-    suryamitra = models.ForeignKey(to=SuryamitraProfile,on_delete = models.CASCADE,
-    blank=True,null=True)
+    # suryamitra = models.ForeignKey(to=SuryamitraProfile,on_delete = models.CASCADE,
+    # blank=True,null=True)
 
     class Meta:
         db_table = 'orders'

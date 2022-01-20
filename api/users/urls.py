@@ -1,10 +1,11 @@
 from django.urls import path
 from users import views
+from django.contrib.auth import views as auth_views
 
 app_name = 'users'
 
 urlpatterns = [
-    # ex: api/user/register/
+        # ex: api/user/register/
     path("register/", views.RegisterView.as_view(), name="Register"),
     # ex: api/user/login/
     path("login/", views.LoginView.as_view(), name="Login"),

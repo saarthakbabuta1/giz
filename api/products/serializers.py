@@ -8,10 +8,10 @@ class PvModelsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Models
-        fields = ("sku","name","description","brand")
+        fields = ("sku","name","description","brand","grid","components")
 
 class PvProductsSerializers(serializers.ModelSerializer):
 
     class Meta:
         model = Products
-        fields = ("sku","oem","assembly","comments","sku_model","quantity")
+        fields = ("sku","oem","assembly","comments","quantity","available_quantity")

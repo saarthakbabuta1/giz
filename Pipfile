@@ -14,6 +14,7 @@ django-allauth = "*"
 pyjwt = "*"
 boto3 = "*"
 django-suit = {file = "https://github.com/darklow/django-suit/tarball/v2"}
+django-address = "*"
 
 [dev-packages]
 

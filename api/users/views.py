@@ -30,12 +30,6 @@ from rest_framework_simplejwt.views import TokenRefreshView
 # Create your views here.
 
 class RegisterView(CreateAPIView):
-    """
-    Register View
-
-    Register a new user to the system.
-    The data required are username, email, name, password and mobile (optional).
-    """
 
     permission_classes = (AllowAny,)
     serializer_class = UserSerializer
@@ -56,15 +50,6 @@ class RegisterView(CreateAPIView):
         return User.objects.create_user(**data)
 
 class LoginView(APIView):
-    """
-    Login View
-
-    This is used to Login into system.
-    The data required are 'username' and 'password'.
-
-    username -- Either username or mobile or email address.
-    password -- Password of the user.
-    """
 
     permission_classes = (AllowAny,)
     serializer_class = CustomTokenObtainPairSerializer
@@ -100,14 +85,6 @@ class LoginView(APIView):
 
 
 class CheckUniqueView(APIView):
-    """
-    Check Unique API View
-
-    This view checks if the given property -> value pair is unique (or
-    doesn't exists yet)
-    'prop' -- A property to check for uniqueness (username/email/mobile)
-    'value' -- Value against property which is to be checked for.
-    """
 
     renderer_classes = (JSONRenderer,)
     permission_classes = (AllowAny,)
@@ -136,13 +113,6 @@ class CheckUniqueView(APIView):
             )
 
 class RetrieveUpdateUserAccountView(RetrieveUpdateAPIView):
-    """
-    Retrieve Update User Account View
-
-    get: Fetch Account Details
-    put: Update all details
-    patch: Update some details
-    """
 
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -169,10 +139,6 @@ class RetrieveUpdateUserAccountView(RetrieveUpdateAPIView):
         )
 
 class CustomTokenRefreshView(TokenRefreshView):
-    """
-    Subclassing TokenRefreshView so that we can update
-    AuthTransaction model when access token is updated
-    """
 
     def post(self, request, *args, **kwargs):
         """
@@ -201,34 +167,6 @@ class CustomTokenRefreshView(TokenRefreshView):
 
 
 class OTPView(APIView):
-    """
-    OTP Validate | OTP Login
-
-    FROM SERIALIZER
-    ----------------
-    is_login -- Set is_login true if trying to login via OTP
-    destination -- Required. Place where sending OTP
-    email -- Fallback in case of destination is a mobile number
-    verify_otp -- OTP in the 2nd step of flow
-
-    Examples
-    --------
-    1. Request an OTP for verifying   
-    >>> {"destination": "me@himanshus.com"}
-    Or for mobile number as destination
-    >>> {"destination": "88xx6xx5xx", "email": "me@himanshus.com"}
-
-    2. Send OTP to verify
-    >>> {"destination": "me@himanshus.com", "verify_otp": 2930432}
-    Or for mobile number as destination
-    >>> {"destination": "88xx6xx5xx", "email": "me@himanshus.com",
-    >>>  "verify_otp": 2930433})
-
-    For log in, just add is_login to request
-    >>> {"destination": "me@himanshus.com", "is_login": True}
-
-    >>> 1
-    """
 
     permission_classes = (AllowAny,)
     serializer_class = OTPSerializer
@@ -275,21 +213,6 @@ class OTPView(APIView):
                 )
 
 class OTPLoginView(APIView):
-    """
-    OTP Login View
-
-    Used to register/login to a system where User may not be required
-    to pre-login but needs to login in later stage or while doing a
-    transaction.
-
-    View ensures a smooth flow by sending same OTP on mobile as well as
-    email.
-
-    name -- Required
-    email -- Required
-    mobile -- Required
-    verify_otp -- Not Required (only when verifying OTP)
-    """
 
     permission_classes = (AllowAny,)
     renderer_classes = (JSONRenderer,)
@@ -365,11 +288,6 @@ class OTPLoginView(APIView):
 
 
 class PasswordResetView(APIView):
-    """This API can be used to reset a user's password.
-
-    Usage: First send an otp to the user by making an
-    API call to `api/user/otp/` with `is_login` parameter value false.
-    """
 
     permission_classes = (AllowAny,)
 
